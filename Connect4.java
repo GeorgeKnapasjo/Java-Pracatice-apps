@@ -3,126 +3,153 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class Connect4 {
-    char[] line = {'*','*','*','*','*','*','*'};
-    char[] line1 = {'*','*','*','*','*','*','*'};
-    char[] line2 = {'*','*','*','*','*','*','*'};
-    char[] line3 = {'*','*','*','*','*','*','*'};
-    char[] line4 = {'*','*','*','*','*','*','*'};
-    char[] line5 = {'*','*','*','*','*','*','*'};
-    char[] line6 = {'*','*','*','*','*','*','*'};
-    char[] guide = {'1','2','3','4','5','6','7'};
-    boolean player1Win = false;
-    boolean player2Win = false;
+    Player player1 = new Player();
+    Player player2 = new Player();
+    Board game = new Board();
+    char[] guide = { '1', '2', '3', '4', '5', '6', '7' };
 
-    void board(){
-        System.out.println(line1);
-        System.out.println(line2);
-        System.out.println(line3);
-        System.out.println(line4);
-        System.out.println(line5);
-        System.out.println(line6);
-        System.out.println(guide);
+    void createGame() {
+        for (int i = 0; i < game.board.length; i++) {
+            for (int x = 0; x < game.board[i].length; x++) {
+                // if(x == 0){
+                // game.board[i][x] = '*';
+                // } else if(game.board[i][x-=1] == '*'){
+                // game.board[i][x] = ' ';
+
+                // } else{
+                game.board[i][x] = '*';
+                // }
+            }
+        }
     }
 
-    void checkHorizontal(char[] line){
+    void printGame() {
+        for (int i = 0; i < game.board.length; i++) {
+            System.out.println(game.board[i]);
+        }
+    }
+    void checkHorizontal() {
         int player1Count = 0;
         int player2Count = 0;
-        for(int i = 0; i < line.length; i+=2){
-            for(int x = 1; x < line.length; x+=2){
-                if(line[i] == 'a' && line[x] == line[i]){
+
+        for (int i = 0; i < game.board.length; i++) {
+            for (int x = 0; x < game.board[i].length; x++) {
+                if(i<game.board.length-1){
+                if(game.board[i][x] == 'a' && game.board[Math.abs(i+1)][x] =='a'){
                     player1Count++;
-                } else if(line[i] == 'a' && line[x] == 'b'){
-                    System.out.println("Player1 reset");
+                } else if(game.board[i][x] == 'a' && game.board[Math.abs(i+1)][x] =='b'){
                     player1Count = 0;
                 }
-                if(line[i] == 'b' && line[x] == line[i]){
-                    player1Count++;
-                } else if(line[i] == 'b' && line[x] == 'a'){
-                    System.out.println("Player2 reset");
+                if(game.board[i][x] == 'b' && game.board[Math.abs(i+1)][x] =='b'){
+                    player2Count++;
+                } else if(game.board[i][x] == 'b' && game.board[Math.abs(i+1)][x] =='a'){
                     player2Count = 0;
                 }
             }
         }
-        if(player1Count >= 3){
-            player1Win = true;
-        }
-        else if(player2Count >= 3){
-            player2Win = true;
-        }
     }
 
-    void checkVertical(){
-        for(int i = 0; i < line1.length; i++){
-            
-        }
+    if (Math.abs(player1Count) >= 3) {
+        player1.playerWins = true;
+    } else if (Math.abs(player2Count) >= 3) {
+        player2.playerWins = true;
     }
-
-    void checkResult(){
-        checkHorizontal(line1);
-        checkHorizontal(line2);
-        checkHorizontal(line3);
-        checkHorizontal(line4);
-        checkHorizontal(line5);
-        checkHorizontal(line6);
 
     }
 
-    void start(){
-        while(player1Win == false && player2Win == false){
-            this.board();
+    void checkVertical() {
+        int player1Count = 0;
+        int player2Count = 0;
+        for (int i = 0; i < game.board.length; i++) {
+            for (int x = 0; x < game.board[i].length; x++) {
+                for (int y = 1; y < game.board[i].length; y++) {
+                    if (game.board[i][x] == 'a' && game.board[i][x] == game.board[i][y]) {
+                        player1Count++;
+                    } else if (game.board[i][x] == 'a' && game.board[i][y] == 'b') {
+                        player1Count = 0;
+                    }
+                    if (game.board[i][x] == 'b' && game.board[i][x] == game.board[i][y]) {
+                        player2Count++;
+                    } else if (game.board[i][x] == 'b' && game.board[i][y] == 'a') {
+                        player2Count = 0;
+                    }
+                }
+            }
+        }
+
+        if (Math.abs(player1Count/2) >= 4) {
+            player1.playerWins = true;
+        } else if (Math.abs(player2Count/2) >= 4) {
+            player2.playerWins = true;
+        }
+    }
+
+    void checkResult() {
+        checkVertical();
+        checkHorizontal();
+    }
+
+    void start() {
+        createGame();
+        while (player1.playerWins == false && player2.playerWins == false) {
+            printGame();
             System.out.println("player 1 please select a row");
-            Scanner player1 = new Scanner(System.in);
-            int answer1 = Math.abs(player1.nextInt()-1);
-            this.add(answer1, 'a');
-            this.board();
+            Scanner player1Choice = new Scanner(System.in);
+            int answer1 = Math.abs(player1Choice.nextInt() - 1);
+            add(answer1, 'a');
+            printGame();
             System.out.println("player 2 please select a row");
-            Scanner player2 = new Scanner(System.in);
-            int answer2 = Math.abs(player2.nextInt()-1);
-            this.add(answer2, 'b');
-            this.board();
+            Scanner player2Choice = new Scanner(System.in);
+            int answer2 = Math.abs(player2Choice.nextInt() - 1);
+            add(answer2, 'b');
+            printGame();
         }
-        if(player1Win){
+        if (player1.playerWins) {
             System.out.println("Player 1 Wins!");
-        } else{
+        } else {
             System.out.println("Player 2 Wins!");
         }
     }
 
-    void add(int line, char player){
-        if(line6[line] == '*'){
-            line6[line] = player;
+    void add(int line, char player) {
+        if (game.board[6][line] == '*' && game.board[6][line] != 'a' && game.board[6][line] != 'b') {
+            game.board[6][line] = player;
             checkResult();
-
-        } 
-        else if(line5[line] == '*'){
-            line5[line] = player;
+        } else if (game.board[5][line] == '*' && game.board[5][line] != 'a' && game.board[5][line] != 'b') {
+            game.board[5][line] = player;
             checkResult();
-
-        }
-        else if(line4[line] == '*'){
-            line4[line] = player;
+        } else if (game.board[4][line] == '*' && game.board[4][line] != 'a' && game.board[4][line] != 'b') {
+            game.board[4][line] = player;
             checkResult();
-
-        }
-        else if(line3[line] == '*'){
-            line3[line] = player;
+        } else if (game.board[3][line] == '*' && game.board[3][line] != 'a' && game.board[3][line] != 'b') {
+            game.board[3][line] = player;
             checkResult();
-            
-        }
-        else if(line2[line] == '*'){
-            line2[line] = player;
+        } else if (game.board[2][line] == '*' && game.board[2][line] != 'a' && game.board[2][line] != 'b') {
+            game.board[2][line] = player;
             checkResult();
-
-        }
-        else if(line1[line] == '*'){
-            line1[line] = player;
+        } else if (game.board[1][line] == '*' && game.board[1][line] != 'a' && game.board[1][line] != 'b') {
+            game.board[1][line] = player;
             checkResult();
-
+        } else if (game.board[0][line] == '*' && game.board[0][line] != 'a' && game.board[0][line] != 'b') {
+            game.board[0][line] = player;
+            checkResult();
         }
     }
 
     public static void main(String[] args) {
         Connect4 keff = new Connect4();
         keff.start();
+    }
+}
+
+class Player {
+    public boolean playerWins = false;
+}
+
+class Board {
+    public char[][] board;
+
+    Board() {
+        board = new char[7][6];
     }
 }
