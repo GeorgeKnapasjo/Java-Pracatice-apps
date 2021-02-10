@@ -57,6 +57,32 @@ public class Connect4 {
 
     }
 
+    void checkDiagonal(){
+        int player1Count = 0;
+        int player2Count = 0;
+        for (int i = 0; i < game.board.length; i++) {
+            for (int x = 0; x < game.board[i].length; x++) {
+                if(i<game.board.length-1 && x<game.board[i].length){
+                if(game.board[i][x] == 'a' && game.board[Math.abs(i+1)][Math.abs(x+1)] =='a'){
+                    player1Count++;
+                } else if(game.board[i][x] == 'a' && game.board[Math.abs(i+1)][Math.abs(x+1)] =='b'){
+                    player1Count = 0;
+                }
+                if(game.board[i][x] == 'b' && game.board[Math.abs(i+1)][Math.abs(x+1)] =='b'){
+                    player2Count++;
+                } else if(game.board[i][x] == 'b' && game.board[Math.abs(i+1)][Math.abs(x+1)] =='a'){
+                    player2Count = 0;
+                }
+            }
+        }
+    }
+    if (Math.abs(player1Count) >= 3) {
+        player1.playerWins = true;
+    } else if (Math.abs(player2Count) >= 3) {
+        player2.playerWins = true;
+    }
+    }
+
     void checkVertical() {
         int player1Count = 0;
         int player2Count = 0;
@@ -87,6 +113,7 @@ public class Connect4 {
     void checkResult() {
         checkVertical();
         checkHorizontal();
+        checkDiagonal();
     }
 
     void start() {
